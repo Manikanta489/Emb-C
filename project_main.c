@@ -1,7 +1,7 @@
 /**
  * @file project_main.c
- * @author Bharath.G ()
- * @brief Project to Blink an LED at 1000ms ON and 500 ms OFF Interval
+ * @author Manikanta Suri
+ * @brief Project to Blink an LED when two switches are On
  * @version 0.1
  * @date 2021-04-23
  * 
@@ -21,6 +21,10 @@ void peripheral_init(void)
 {
 	/* Configure LED Pin */
 	DDRB |= (1 << DDB0);
+	/* Configure the switches*/
+	DDRD&=~(1<<DDD0)|(1<<DDD4);
+	/* logic high to ports PD0, PD4 */
+	PORTD|=(1<<DDD0)|(1<<DDD4);
 }
 
 void change_led_state(uint8_t state)
@@ -41,13 +45,12 @@ int main(void)
 	/* Initialize Peripherals */
 	peripheral_init();
 
-	for(;;)
+	while(1)
 	{
+		if(!(PIND&((1<<DDD0)|(1<<DDD4))))
         change_led_state(LED_ON);
-		delay_ms(LED_ON_TIME);
-		
+		else
         change_led_state(LED_OFF);
-		delay_ms(LED_OFF_TIME);	
 	}
 	return 0;
 }
